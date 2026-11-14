@@ -164,7 +164,7 @@ export function fingerprintImage(period = 9, seed = 21): RGBAImage {
       let phase = (2 * Math.PI * Math.sqrt(dx * dx + dy * dy)) / period;
       phase += 0.6 * Math.sin((x + y) / 23) + 0.5 * Math.sin(y / 17 - x / 41);
       for (const [px, py, s] of dislocations) phase += s * Math.atan2(y - py, x - px);
-      let v = 0.5 + 0.5 * Math.cos(phase);
+      let v = 0.5 - 0.5 * Math.cos(phase); // ridges are the dark lines, as in real photos
       // fingertip mask: soft ellipse
       const e = ((x - cx) / (w * 0.42)) ** 2 + ((y - cy) / (h * 0.46)) ** 2;
       const fade = Math.max(0, Math.min(1, (1.0 - e) * 6));
