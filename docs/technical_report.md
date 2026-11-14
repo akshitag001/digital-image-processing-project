@@ -106,11 +106,9 @@ The LOW measurement on the first frame caused the fusion call; the fused result'
 
 **Architecture (designed, full scale-out path — `aws/infra`, CDK):** API Gateway → Application Load Balancer → an Auto Scaling group of Graviton4 (`c8g`) instances running the **Cloud-Optimized OpenCV Library (COOL) v3.1 AMI**, with S3 for datasets, study results, and a transient upload bucket (1-day lifecycle expiry as a backstop — the service itself never persists an upload; see §8). The CDK stack synthesizes cleanly to 50 CloudFormation resources. `aws/cool_benchmark` is a harness that runs an identical seeded workload on COOL/Graviton and on a stock-OpenCV x86 baseline, recording per-kernel speed-ups, latency, throughput, cost, and **provenance** (`cv2.__file__`, the KleidiCV build flag, `platform.machine()`, EC2 instance type via IMDS) as evidence of which build served the request.
 
-**What is actually running at submission time:** a single EC2 instance (Ubuntu 24.04, **x86_64**, region `ap-southeast-2`, Sydney) running the FastAPI service directly under systemd, with no ALB, Auto Scaling or API Gateway. This was the fastest and cheapest path inside the build window. It is reachable at:
+**What is actually running at submission time:** a single EC2 instance (Ubuntu 24.04, **x86_64**, region `ap-southeast-2`, Sydney) running the FastAPI service directly under systemd, with no ALB, Auto Scaling or API Gateway. This was the fastest and cheapest path inside the build window.
 
-> **http://16.176.2.43:8000** (health: `/health`)
-
-Verified from outside AWS on 26 Oct 2026: the landing page and assets load; a scoring request runs the full OpenCV 5 pipeline on the instance (detection, rectification, Gabor enhancement, extraction, calibrated scoring, evidence map) and returns a band, probability, heat map and zoom callout; requests without the consent flag are rejected with HTTP 400; and the research-only minutiae endpoint returns HTTP 404, as designed for a public host.
+Verified from outside AWS: the landing page and assets load; a scoring request runs the full OpenCV 5 pipeline on the instance (detection, rectification, Gabor enhancement, extraction, calibrated scoring, evidence map) and returns a band, probability, heat map and zoom callout; requests without the consent flag are rejected with HTTP 400; and the research-only minutiae endpoint returns HTTP 404, as designed for a public host.
 
 This satisfies "a meaningful component on AWS" and "a working web endpoint". **It does not use COOL or Graviton**, so this entry does **not** claim the Best Use of COOL award. The ALB/ASG/COOL stack in `aws/infra` and the benchmark harness in `aws/cool_benchmark` are complete and synthesise cleanly, but were not deployed or run.
 

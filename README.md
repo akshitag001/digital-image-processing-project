@@ -10,10 +10,10 @@
 ![python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)
 ![opencv](https://img.shields.io/badge/OpenCV-5.0-5C3EE8?logo=opencv&logoColor=white)
 ![fastapi](https://img.shields.io/badge/FastAPI-web%20service-009688?logo=fastapi&logoColor=white)
-![aws](https://img.shields.io/badge/AWS-EC2%20live-FF9900?logo=amazonaws&logoColor=white)
+![aws](https://img.shields.io/badge/AWS-EC2-FF9900?logo=amazonaws&logoColor=white)
 ![dip](https://img.shields.io/badge/Digital%20Image%20Processing-course%20project-E8A33D)
 
-**[Live demo](http://16.176.2.43:8000)** · **[DIP concepts](#the-dip-inside-gattaca)** · **[See it](#see-it-in-action)** · **[Quickstart](#quickstart)** · **[Results](#headline-results)** · **[Technical report](docs/technical_report.md)**
+**[DIP concepts](#the-dip-inside-gattaca)** · **[See it](#see-it-in-action)** · **[Quickstart](#quickstart)** · **[Results](#headline-results)** · **[Technical report](docs/technical_report.md)**
 
 </div>
 
@@ -275,7 +275,7 @@ Seeds are fixed. Raw outputs are CSV, so every plot can be regenerated without r
 
 ## Deployment
 
-**Live now:** one EC2 instance (Ubuntu 24.04, x86_64, `ap-southeast-2` Sydney) runs the FastAPI service under systemd. Every request executes the full OpenCV 5 pipeline on that instance: detection, rectification, Gabor enhancement, extraction, scoring and the evidence map. Setup is one script: [`aws/minimal_deploy.sh`](aws/minimal_deploy.sh).
+**AWS:** the service is set up to run on one EC2 instance (Ubuntu 24.04, x86_64, `ap-southeast-2` Sydney) runs the FastAPI service under systemd. Every request executes the full OpenCV 5 pipeline on that instance: detection, rectification, Gabor enhancement, extraction, scoring and the evidence map. Setup is one script: [`aws/minimal_deploy.sh`](aws/minimal_deploy.sh).
 
 ```bash
 # on a fresh Ubuntu EC2 instance (port 8000 open in its security group)
@@ -292,7 +292,7 @@ bash digital-image-processing-project/aws/minimal_deploy.sh ~/digital-image-proc
 | OpenCV 5 pipeline, video path, agent, web service, protection | ✅ built, 43 tests passing |
 | Neural hand detector (`cv2.dnn`) on real photos | ✅ 5/5 fingers found on each of three real test photos (portrait V-sign, phone V-sign, open palm) |
 | Measurement study + calibration | ✅ on synthetic data · ⏳ re-run on HKPolyU / RidgeBase pending dataset access |
-| AWS deployment | ✅ **live** on EC2 at http://16.176.2.43:8000 (single instance) |
+| AWS deployment | ✅ single EC2 instance, one-script setup |
 | CDK scale-out stack (ALB + ASG + COOL) | ✅ synthesises · not deployed |
 | COOL vs x86 benchmark | ✅ harness · not run yet |
 
