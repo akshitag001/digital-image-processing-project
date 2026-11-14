@@ -17,7 +17,8 @@ export function phrasesFor(t: Term): string[] {
   add(t.name);
   add(t.name.replace(/\s*\([^)]*\)\s*/g, ' '));
   const paren = /\(([^)]+)\)/.exec(t.name);
-  if (paren && /^[A-Za-z0-9-]{2,8}$/.test(paren[1])) add(paren[1]);
+  // only acronyms such as (DFT) or (LoG): never ordinary words such as (mean) or (shape)
+  if (paren && /^[A-Za-z0-9-]{2,8}$/.test(paren[1]) && (paren[1].match(/[A-Z]/g) ?? []).length >= 2) add(paren[1]);
   t.aliases?.forEach(add);
   return [...out];
 }

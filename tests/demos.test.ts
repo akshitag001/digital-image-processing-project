@@ -93,7 +93,7 @@ describe('demo results are numerically sensible', () => {
   });
 
   it('wiener restores a degraded image better than the degraded input (PSNR)', async () => {
-    const r = await run('wiener', { method: 'wiener', noise: 2 });
+    const r = await run('wiener', { method: 'wiener' });
     const [a, b] = stat(r, 'PSNR').split('->').map((s) => parseFloat(s));
     expect(b).toBeGreaterThan(a);
   });

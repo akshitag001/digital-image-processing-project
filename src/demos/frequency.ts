@@ -315,10 +315,10 @@ export const restorationDemos: Demo[] = [
     sample: 'scene',
     params: [
       { type: 'select', key: 'psf', label: 'Blur (PSF)', options: [['gaussian', 'Gaussian'], ['motion', 'Horizontal motion']], default: 'motion' },
-      { type: 'range', key: 'size', label: 'Blur size (px)', min: 2, max: 24, step: 1, default: 12 },
-      { type: 'range', key: 'noise', label: 'Noise sigma (gray levels)', min: 0, max: 15, step: 0.5, default: 2 },
+      { type: 'range', key: 'size', label: 'Blur size (px)', min: 2, max: 24, step: 1, default: 7 },
+      { type: 'range', key: 'noise', label: 'Noise sigma (gray levels)', min: 0, max: 15, step: 0.5, default: 1 },
       { type: 'select', key: 'method', label: 'Restoration', options: [['inverse', 'Inverse filter G / H'], ['wiener', 'Wiener filter']], default: 'wiener' },
-      { type: 'range', key: 'k', label: 'Wiener K = 10^-x   (x)', min: 0.5, max: 5, step: 0.1, default: 2.5 },
+      { type: 'range', key: 'k', label: 'Wiener K = 10^-x   (x)', min: 0.5, max: 5, step: 0.1, default: 3 },
     ],
     run(cv, src, p) {
       const t = tracker(cv);
