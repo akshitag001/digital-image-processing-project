@@ -1,6 +1,0 @@
-node_modules
-dist
-public/opencv.js
-*.log
-.vercel
-.DS_Store
