@@ -195,7 +195,7 @@ export const snippets: Record<string, Snippet> = {
   ),
   'cv.kmeans': s(
     `Z = img.reshape(-1, 3).astype(np.float32)\ncrit = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)\n_, labels, centers = cv2.kmeans(Z, 4, None, crit, 5, cv2.KMEANS_PP_CENTERS)`,
-    `const crit = new cv.TermCriteria(cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 10, 1.0);\ncv.kmeans(samples, 4, labels, crit, 3, cv.KMEANS_PP_CENTERS, centers);`,
+    `const crit = new cv.TermCriteria(cv.TermCriteria_EPS + cv.TermCriteria_MAX_ITER, 10, 1.0);\ncv.kmeans(samples, 4, labels, crit, 3, cv.KMEANS_PP_CENTERS, centers);`,
   ),
   'cv.grabCut': s(
     `mask = np.zeros(img.shape[:2], np.uint8)\nbgd = np.zeros((1, 65), np.float64); fgd = np.zeros((1, 65), np.float64)\ncv2.grabCut(img, mask, rect, bgd, fgd, 5, cv2.GC_INIT_WITH_RECT)`,
@@ -258,7 +258,7 @@ export const snippets: Record<string, Snippet> = {
   ),
   'cv.findTransformECC': s(
     `warp = np.eye(2, 3, dtype=np.float32)\ncrit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 100, 1e-6)\ncc, warp = cv2.findTransformECC(ref, mov, warp, cv2.MOTION_AFFINE, crit, None, 5)\naligned = cv2.warpAffine(mov, warp, (w, h), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP)`,
-    `const warp = cv.Mat.eye(2, 3, cv.CV_32F);\nconst crit = new cv.TermCriteria(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 100, 1e-6);\ncv.findTransformECC(ref, mov, warp, cv.MOTION_AFFINE, crit, new cv.Mat(), 5);`,
+    `const warp = cv.Mat.eye(2, 3, cv.CV_32F);\nconst crit = new cv.TermCriteria(cv.TermCriteria_EPS | cv.TermCriteria_COUNT, 100, 1e-6);\ncv.findTransformECC(ref, mov, warp, cv.MOTION_AFFINE, crit, new cv.Mat(), 5);`,
   ),
 };
 
