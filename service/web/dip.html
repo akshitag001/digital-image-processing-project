@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIP concepts in GATTACA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0908;--panel:#14120f;--panel2:#1b1813;--ink:#f5f0e6;--muted:#a79e91;--line:#2a251e;
+        --accent:#e8a33d;--accent2:#c9772a;--maxw:1120px}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       -webkit-font-smoothing:antialiased;line-height:1.65}
+  a{color:var(--accent)}
+  .serif{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400}
+  .mono,code{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,9,8,.8);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:var(--maxw);margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .logo{font-weight:800;letter-spacing:.12em;font-size:17px;text-decoration:none;color:var(--ink)}
+  .logo i{font-style:normal;color:var(--accent)}
+  .nav-links{display:flex;gap:18px;margin-left:auto;font-size:14px;flex-wrap:wrap}
+  .nav-links a{color:var(--muted);text-decoration:none}
+  .nav-links a:hover{color:var(--ink)}
+  .back{border:1px solid var(--line);border-radius:999px;padding:7px 16px;color:var(--ink)!important}
+  main{max-width:var(--maxw);margin:0 auto;padding:0 22px 80px}
+  header.top{padding:64px 0 24px}
+  .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(34px,5.4vw,60px);line-height:1.05;letter-spacing:-.03em;margin:0}
+  h2{font-size:clamp(26px,3.2vw,38px);line-height:1.12;letter-spacing:-.02em;margin:0 0 6px}
+  h3{font-size:19px;margin:30px 0 6px}
+  .lead{color:var(--muted);font-size:18px;max-width:70ch;margin:18px 0 0}
+  .note{margin:22px 0 0;padding:14px 18px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;
+        background:var(--panel);color:var(--muted);font-size:14.5px}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0}
+  .toc a{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13.5px;text-decoration:none;color:var(--ink);background:var(--panel)}
+  .toc a:hover{border-color:var(--accent)}
+  section.stage{padding-top:70px;scroll-margin-top:70px}
+  .stage-n{font-size:12px;letter-spacing:.16em;color:var(--accent)}
+  .where{color:var(--muted);max-width:75ch}
+  .concept{margin-top:34px;padding:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel)}
+  .concept h3{margin-top:0;font-size:22px}
+  .concept p{margin:10px 0;color:#d8d1c4;max-width:78ch}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+  .tags span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--muted);background:var(--panel2)}
+  .formula{margin:12px 0;padding:12px 16px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);
+           font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--accent);overflow-x:auto;white-space:pre}
+  .code{margin:12px 0;padding:12px 16px;border-radius:12px;background:#070605;border:1px solid var(--line);
+        font-family:"JetBrains Mono",monospace;font-size:13px;color:#cfc7ba;overflow-x:auto;white-space:pre}
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:18px 0 6px}
+  figure{margin:0}
+  figure img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#000}
+  figcaption{font-size:13px;color:var(--muted);margin-top:7px;line-height:1.45}
+  figcaption b{color:var(--ink)}
+  .use{margin-top:12px;padding:12px 16px;border-radius:12px;background:rgba(232,163,61,.08);border:1px solid rgba(232,163,61,.28);
+       font-size:14.5px;color:#eadfc9}
+  .use b{color:var(--accent)}
+  footer{max-width:var(--maxw);margin:0 auto;padding:30px 22px 60px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+  @media(max-width:700px){.concept{padding:18px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="/">GATT<i>A</i>CA</a>
+    <div class="nav-links">
+      <a href="#s1">1 Sampling</a><a href="#s2">2 Detect</a><a href="#s3">3 Rectify</a>
+      <a href="#s4">4 Enhance</a><a href="#s5">5 Extract</a><a href="#s6">6 Score</a>
+      <a class="back" href="/#how">&larr; Back to GATTACA</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<header class="top">
+  <div class="eyebrow">Digital Image Processing</div>
+  <h1>The DIP concepts <span class="serif">inside</span> GATTACA.</h1>
+  <p class="lead">GATTACA is a pipeline of ordinary digital image processing techniques. This page walks through the six stages and explains
+    every DIP concept the project uses: the idea, the formula, the OpenCV call, and where it appears, with the fingerprint images it produces.</p>
+  <p class="note"><strong>About the images.</strong> To keep every picture reproducible and to avoid showing anyone's biometrics, the fingerprint images on this page
+    are produced by running the same kinds of operations on a <em>generated</em> ridge pattern (mathematics, not a person). The hand photos
+    (<code>Detect</code> and <code>Rectify</code>) are the project's own synthetic-hand renders.
+    GATTACA is a privacy-awareness tool. It estimates exposure risk; it does not store biometrics or defeat security systems.</p>
+  <div class="toc">
+    <a href="#sampling">Sampling &amp; Nyquist</a><a href="#pprp">PPRP</a><a href="#aliasing">Aliasing</a>
+    <a href="#morph">Morphology</a><a href="#dist">Distance transform</a><a href="#cc">Connected components</a>
+    <a href="#persp">Perspective transform</a><a href="#interp">Interpolation</a>
+    <a href="#clahe">CLAHE</a><a href="#bilateral">Bilateral filter</a><a href="#gradient">Gradient (Sobel)</a><a href="#fourier">Fourier spectrum</a><a href="#gabor">Gabor filter</a>
+    <a href="#otsu">Otsu</a><a href="#thinning">Thinning</a><a href="#minutiae">Minutiae</a>
+    <a href="#color">Pseudo-coloring</a><a href="#jpeg">JPEG</a>
+  </div>
+</header>
+
+<!-- ================= 1 ================= -->
+<section class="stage" id="s1">
+  <div class="stage-n mono">STAGE 01 · INPUT</div>
+  <h2>Sampling decides everything</h2>
+  <p class="where">A camera turns a continuous scene into a grid of pixels. After that point no algorithm can add detail that was never sampled, so the first DIP concept is also the most important one.</p>
+
+  <article class="concept" id="sampling">
+    <h3>Sampling and the Nyquist criterion</h3>
+    <div class="tags"><span>Unit: Fundamentals</span><span>Sampling</span><span>Nyquist</span><span>Spatial resolution</span></div>
+    <p><b>Sampling</b> measures the image at a regular grid of positions. To represent a repeating pattern you need <em>more than two samples per period</em> (the Nyquist criterion). A fingerprint is exactly such a pattern: ridges repeat about every 0.4&ndash;0.5&nbsp;mm.</p>
+    <div class="formula">f_s &gt; 2 · f_max          (at least 2 pixels per ridge period, in practice many more)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/fp-input.png" alt="Fingerprint pattern at full resolution"><figcaption><b>Full resolution.</b> About 7.5 pixels per ridge: the ridges are well sampled.</figcaption></figure>
+      <figure><img src="/assets/dip/alias-naive.png" alt="Fingerprint after naive decimation"><figcaption><b>Naive 5x down-sampling.</b> Only ~1.5 pixels per ridge, below Nyquist. The ridges turn into false patterns.</figcaption></figure>
+    </div>
+    <div class="use"><b>In GATTACA:</b> this is the whole privacy question. A distant, low-resolution photo simply does not contain the ridges, so they cannot be recovered whatever the later stages do.</div>
+  </article>
+
+  <article class="concept" id="pprp">
+    <h3>Pixels per ridge period (PPRP)</h3>
+    <div class="tags"><span>Unit: Fundamentals + Frequency domain</span><span>Spatial resolution</span><span>Fourier spectrum</span></div>
+    <p>Distance in metres means nothing without the lens, sensor and later resizing. GATTACA instead measures <b>PPRP</b>: how many pixels span one ridge-to-ridge period. It is read from the 2-D spectrum: the ring of energy at the ridge frequency has radius <code>f</code>, and the period in pixels is <code>1 / f</code>.</p>
+    <div class="formula">PPRP = ridge period [mm] × pixel density [px/mm] = 1 / f_ridge [cycles/px]</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/stage-pprp.png" alt="Fourier spectrum with ridge ring"><figcaption><b>Spectrum of the fingerprint.</b> The red circle marks the ridge frequency (PPRP = 7.5). The blue circle is the Nyquist limit (2 px per period).</figcaption></figure>
+    </div>
+    <div class="use"><b>In GATTACA:</b> PPRP is the x-axis of the recoverability curve and decides the HIGH / MEDIUM / LOW band.</div>
+  </article>
+
+  <article class="concept" id="aliasing">
+    <h3>Aliasing and anti-aliasing</h3>
+    <div class="tags"><span>Unit: Fundamentals</span><span>Aliasing</span><span>Low-pass filtering</span></div>
+    <p>Frequencies above half the sampling rate do not disappear when you sample; they <em>fold back</em> as false lower frequencies. It cannot be repaired afterwards, so you must band-limit (blur) <em>before</em> reducing resolution. <code>cv2.INTER_AREA</code> does this when shrinking.</p>
+    <div class="figs">
+      <figure><img src="/assets/dip/alias-naive.png" alt="Aliased"><figcaption><b>Without a pre-filter:</b> false patterns appear.</figcaption></figure>
+      <figure><img src="/assets/dip/alias-filtered.png" alt="Anti-aliased"><figcaption><b>Gaussian pre-filter first:</b> the unrepresentable detail is removed instead of aliased.</figcaption></figure>
+    </div>
+    <div class="code">cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)    # anti-aliased shrink</div>
+    <div class="use"><b>In GATTACA:</b> the degradation ladder shrinks images to chosen PPRP values with <code>INTER_AREA</code>, so the study measures lost resolution, not aliasing artifacts.</div>
+  </article>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="stage" id="s2">
+  <div class="stage-n mono">STAGE 02 · DETECT</div>
+  <h2>Finding the fingertip</h2>
+  <p class="where">A neural hand-landmark model finds fingertips; a classical fallback builds a skin mask and locates the tips from its shape. The fallback is pure morphology and shape analysis.</p>
+  <div class="figs" style="max-width:420px"><figure><img src="/assets/02_detect.jpg" alt="Fingertip detection"><figcaption><b>Detection result</b> on the synthetic hand.</figcaption></figure></div>
+
+  <article class="concept" id="morph">
+    <h3>Thresholding, erosion, dilation, opening and closing</h3>
+    <div class="tags"><span>Unit: Segmentation</span><span>Unit: Morphology</span><span>Structuring element</span></div>
+    <p>A color or intensity <b>threshold</b> gives a binary skin mask, which is noisy. <b>Erosion</b> shrinks the mask (a pixel survives only if the structuring element fits inside), <b>dilation</b> grows it. <b>Opening</b> (erode then dilate) removes specks; <b>closing</b> (dilate then erode) fills pin-holes.</p>
+    <div class="formula">A ⊖ B = { z | B_z ⊆ A }       A ⊕ B = { z | B̂_z ∩ A ≠ ∅ }       A ∘ B = (A ⊖ B) ⊕ B</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/morph-open.png" alt="Opening of the ridge mask"><figcaption><b>Opening</b> of a binarized ridge image: tiny specks vanish, the ridges keep their size.</figcaption></figure>
+    </div>
+    <div class="code">k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, k)</div>
+    <div class="use"><b>In GATTACA:</b> <code>roi.py</code> follows the FingerSafe recipe: binary mask, erosion/dilation, largest contour, crop. The ridge mask in <code>enhance.py</code> is cleaned the same way.</div>
+  </article>
+
+  <article class="concept" id="dist">
+    <h3>Distance transform</h3>
+    <div class="tags"><span>Unit: Pixel relationships</span><span>Euclidean distance</span></div>
+    <p>For every foreground pixel, the distance to the nearest background pixel (Euclidean <code>√((x−s)²+(y−t)²)</code>, city-block D4 or chessboard D8). Its peaks lie in the middle of thick parts, so it is used to place landmarks and to keep a safe margin from borders.</p>
+    <div class="figs">
+      <figure><img src="/assets/dip/distance-out.png" alt="Distance transform"><figcaption><b>Distance map.</b> Blue is near the edge, red deep inside.</figcaption></figure>
+    </div>
+    <div class="code">dist = cv2.distanceTransform(mask, cv2.DIST_L2, 5)</div>
+    <div class="use"><b>In GATTACA:</b> fingertip localisation in <code>detect.py</code> and margins in <code>extract.py</code> use <code>cv2.distanceTransform</code>.</div>
+  </article>
+
+  <article class="concept" id="cc">
+    <h3>Connected components</h3>
+    <div class="tags"><span>Unit: Segmentation</span><span>Connectivity</span><span>8-neighborhood</span></div>
+    <p>Labels every group of connected foreground pixels (4- or 8-connectivity). <code>connectedComponentsWithStats</code> also returns each blob's area and bounding box, so the largest blob can be kept as the hand and tiny blobs dropped as noise.</p>
+    <div class="figs">
+      <figure><img src="/assets/dip/cc-out.png" alt="Connected components"><figcaption><b>Labelled components</b> (each color is one connected group).</figcaption></figure>
+    </div>
+    <div class="code">n, labels, stats, cents = cv2.connectedComponentsWithStats(binary, connectivity=8)</div>
+    <div class="use"><b>In GATTACA:</b> used to select the finger and to remove ridge fragments shorter than about one period.</div>
+  </article>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="stage" id="s3">
+  <div class="stage-n mono">STAGE 03 · RECTIFY</div>
+  <h2>Making every finger look the same</h2>
+  <p class="where">The fingertip is cropped, warped to a frontal view and rescaled so that one ridge spans about 9 pixels (the 500 ppi scan standard).</p>
+  <div class="figs" style="max-width:420px"><figure><img src="/assets/03_roi.jpg" alt="Rectified region of interest"><figcaption><b>Rectified region of interest.</b></figcaption></figure></div>
+
+  <article class="concept" id="persp">
+    <h3>Perspective transformation (homography)</h3>
+    <div class="tags"><span>Unit: Geometric transformations</span><span>Affine</span><span>Homography</span></div>
+    <p>A <b>homography</b> is a 3×3 matrix with 8 free parameters that maps one plane to another as a camera sees it, so parallel lines can converge. Four point pairs determine it. An <b>affine</b> transform (6 parameters, 3 point pairs) keeps parallel lines parallel and is used for small motions.</p>
+    <div class="formula">x' = (h11·x + h12·y + h13) / (h31·x + h32·y + h33)
+y' = (h21·x + h22·y + h23) / (h31·x + h32·y + h33)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/fp-input.png" alt="Original"><figcaption><b>Original.</b></figcaption></figure>
+      <figure><img src="/assets/dip/perspective-out.png" alt="Perspective-warped"><figcaption><b>Perspective warp</b> from four moved corners.</figcaption></figure>
+    </div>
+    <div class="code">H = cv2.getPerspectiveTransform(src_pts, dst_pts)
+out = cv2.warpPerspective(img, H, (w, h))</div>
+    <div class="use"><b>In GATTACA:</b> <code>rectify.py</code> warps the finger surface to a canonical frontal view; <code>video/align.py</code> uses affine alignment for frames.</div>
+  </article>
+
+  <article class="concept" id="interp">
+    <h3>Scaling and interpolation</h3>
+    <div class="tags"><span>Unit: Geometric transformations</span><span>Nearest</span><span>Bilinear</span><span>Bicubic</span></div>
+    <p>Resampling needs a value at positions that fall between pixels. <b>Nearest</b> copies the closest pixel (blocky), <b>bilinear</b> blends 4 neighbors, <b>bicubic</b> fits a cubic through 16. Shrinking should use area averaging to avoid aliasing; enlarging uses cubic for quality.</p>
+    <div class="use"><b>In GATTACA:</b> every ROI is resampled so its measured period is the canonical 9 px before enhancement, an automatic version of the scale correction in Lin &amp; Kumar's method.</div>
+  </article>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="stage" id="s4">
+  <div class="stage-n mono">STAGE 04 · ENHANCE</div>
+  <h2>Where the ridges appear</h2>
+  <p class="where">This is the core classical pipeline: even out the lighting, remove noise, measure ridge direction and frequency, then filter with oriented Gabor kernels.</p>
+  <div class="figs">
+    <figure><img src="/assets/dip/stage-gray.png" alt="Grayscale"><figcaption><b>1 &middot; Grayscale</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-clahe.png" alt="After CLAHE"><figcaption><b>2 &middot; CLAHE</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-denoise.png" alt="After bilateral filter"><figcaption><b>3 &middot; Bilateral</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-orientation.png" alt="Orientation field"><figcaption><b>4 &middot; Orientation</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-gabor.png" alt="Gabor enhanced"><figcaption><b>5 &middot; Gabor</b></figcaption></figure>
+  </div>
+
+  <article class="concept" id="clahe">
+    <h3>CLAHE (histogram equalization with a clip limit)</h3>
+    <div class="tags"><span>Unit: Histogram processing</span><span>Histogram</span><span>Equalization</span></div>
+    <p>A <b>histogram</b> counts pixels per gray level. <b>Equalization</b> maps levels through the cumulative distribution so the output histogram is flatter and contrast spreads out. Global equalization is dominated by large regions and boosts noise, so <b>CLAHE</b> equalizes small tiles separately and <em>clips</em> each tile's histogram, capping the noise amplification.</p>
+    <div class="formula">s_k = (L − 1) · Σ_{j≤k} p(r_j)          clip the histogram at a limit, redistribute the excess</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/clahe-out.png" alt="CLAHE"><figcaption><b>CLAHE</b> (clip 3, 8×8 tiles): even ridge contrast everywhere.</figcaption></figure>
+      <figure><img src="/assets/dip/clahe-global.png" alt="Global equalization"><figcaption><b>Global equalization</b> for comparison: more noise, uneven.</figcaption></figure>
+    </div>
+    <div class="code">clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+eq = clahe.apply(gray)</div>
+    <div class="use"><b>In GATTACA:</b> first step of <code>enhance.py</code>, so uneven lighting does not hide ridges in dark or bright patches.</div>
+  </article>
+
+  <article class="concept" id="bilateral">
+    <h3>Bilateral filter (edge-preserving smoothing)</h3>
+    <div class="tags"><span>Unit: Spatial filtering</span><span>Gaussian filter</span><span>Noise</span><span>Non-local means</span></div>
+    <p>A <b>Gaussian filter</b> averages neighbors by distance and blurs edges. The <b>bilateral filter</b> multiplies two Gaussians, one on spatial distance and one on <em>intensity difference</em>, so pixels across a strong edge get almost no weight. Sensor noise is smoothed, ridge edges stay sharp. (GATTACA can also use <b>non-local means</b>, which averages pixels whose surrounding patches look alike.)</p>
+    <div class="formula">g(p) = (1/W_p) Σ_q f(q) · G_σs(‖p−q‖) · G_σr(|f(p) − f(q)|)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/bilateral-out.png" alt="Bilateral"><figcaption><b>Bilateral:</b> ridges stay crisp.</figcaption></figure>
+      <figure><img src="/assets/dip/gaussian-out.png" alt="Gaussian"><figcaption><b>Gaussian, same extent:</b> ridges blur.</figcaption></figure>
+    </div>
+    <div class="code">den = cv2.bilateralFilter(eq, 5, 20, 3)</div>
+    <div class="use"><b>In GATTACA:</b> CLAHE amplifies noise, so a light bilateral (or non-local means) pass follows it.</div>
+  </article>
+
+  <article class="concept" id="gradient">
+    <h3>Image gradient and the Sobel operator (orientation field)</h3>
+    <div class="tags"><span>Unit: Spatial filtering</span><span>Gradient</span><span>Sobel</span><span>Convolution</span></div>
+    <p>The <b>gradient</b> (g<sub>x</sub>, g<sub>y</sub>) points toward the steepest intensity increase; across a ridge it is perpendicular to the ridge. The <b>Sobel</b> kernels estimate it while smoothing. Gradients on opposite sides of a ridge point in opposite directions and would cancel, so GATTACA averages the <em>products</em> g<sub>x</sub>², g<sub>y</sub>², g<sub>x</sub>g<sub>y</sub> (the structure tensor) and takes the angle of the result.</p>
+    <div class="formula">Gx = [-1 0 1; -2 0 2; -1 0 1] ∗ f              θ = ½ · atan2( 2·Σ gx·gy ,  Σ(gx² − gy²) )</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/sobel-mag.png" alt="Sobel magnitude"><figcaption><b>Gradient magnitude</b> (strong at every ridge edge).</figcaption></figure>
+      <figure><img src="/assets/dip/stage-orientation.png" alt="Orientation field"><figcaption><b>Ridge orientation</b> (red segments) from the smoothed structure tensor.</figcaption></figure>
+    </div>
+    <div class="code">gx = cv2.Sobel(g, cv2.CV_32F, 1, 0, ksize=3)
+gy = cv2.Sobel(g, cv2.CV_32F, 0, 1, ksize=3)</div>
+    <div class="use"><b>In GATTACA:</b> <code>orientation_field()</code> in <code>enhance.py</code>. Orientation tells each Gabor filter which way to point.</div>
+  </article>
+
+  <article class="concept" id="fourier">
+    <h3>Fourier transform and spectrum</h3>
+    <div class="tags"><span>Unit: Frequency domain</span><span>DFT / FFT</span><span>Magnitude spectrum</span></div>
+    <p>The <b>DFT</b> expresses an image as a sum of sinusoids. Its <b>magnitude spectrum</b> shows which spatial frequencies are present: ridges, being a repeating pattern, appear as a bright ring whose radius is the ridge frequency. The <b>FFT</b> computes the DFT in O(N log N). Spectra span a huge range, so they are displayed as log(1 + |F|).</p>
+    <div class="formula">F(u,v) = Σx Σy f(x,y) · e^{−j2π(ux/M + vy/N)}          display: log(1 + |F|)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/fft-spectrum.png" alt="Magnitude spectrum"><figcaption><b>Magnitude spectrum</b> of the fingerprint: the ring is the ridge frequency.</figcaption></figure>
+    </div>
+    <div class="code">F = cv2.dft(np.float32(gray), flags=cv2.DFT_COMPLEX_OUTPUT)
+mag = cv2.magnitude(F[..., 0], F[..., 1])</div>
+    <div class="use"><b>In GATTACA:</b> block spectra give the local ridge period (<code>ridgefreq.py</code>), which becomes PPRP and sets the Gabor wavelength.</div>
+  </article>
+
+  <article class="concept" id="gabor">
+    <h3>Gabor filter (oriented band-pass)</h3>
+    <div class="tags"><span>Unit: Representation + Frequency domain</span><span>Texture</span><span>Band-pass</span><span>Convolution</span></div>
+    <p>A <b>Gabor kernel</b> is a cosine wave under a Gaussian envelope. Orientation θ chooses the ridge direction it responds to and wavelength λ chooses the ridge period. It passes only a narrow band of frequencies in one direction, so ridges are boosted and noise is averaged away. GATTACA builds a <em>bank</em> of orientations and, at every pixel, uses the kernel that matches the local orientation and period (contextual filtering).</p>
+    <div class="formula">g(x,y) = exp(−(x'² + γ²y'²) / 2σ²) · cos(2π·x'/λ + ψ)         x' = x·cosθ + y·sinθ</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/gabor-kernel.png" alt="Gabor kernel"><figcaption><b>One Gabor kernel</b> (enlarged): stripes under a Gaussian window.</figcaption></figure>
+      <figure><img src="/assets/dip/gabor-orient.png" alt="Best orientation per pixel"><figcaption><b>Best orientation</b> per pixel (hue) from a 12-filter bank.</figcaption></figure>
+      <figure><img src="/assets/dip/stage-gabor.png" alt="Gabor enhanced"><figcaption><b>Enhanced ridges:</b> clean, high-contrast stripes.</figcaption></figure>
+      <figure><img src="/assets/dip/far-gabor.png" alt="Gabor enhancement at low resolution"><figcaption><b>Same filter at ~2 px/ridge:</b> nothing reliable to lock on to.</figcaption></figure>
+    </div>
+    <div class="code">k = cv2.getGaborKernel((k, k), sigma, theta, lambd, gamma, 0)
+resp = cv2.filter2D(norm, cv2.CV_32F, k)</div>
+    <div class="use"><b>In GATTACA:</b> the heart of <code>enhance.py</code>. The right-most image shows the privacy point: when PPRP is too low, even a perfect filter cannot invent ridges.</div>
+  </article>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="stage" id="s5">
+  <div class="stage-n mono">STAGE 05 · EXTRACT</div>
+  <h2>From a gray image to minutiae</h2>
+  <p class="where">The enhanced image is binarized, thinned to a one-pixel skeleton, and the skeleton is searched for ridge endings and bifurcations.</p>
+  <div class="figs">
+    <figure><img src="/assets/dip/stage-threshold.png" alt="Binarized"><figcaption><b>Binarize (Otsu)</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-thinning.png" alt="Skeleton"><figcaption><b>Thin (Zhang-Suen)</b></figcaption></figure>
+    <figure><img src="/assets/dip/stage-minutiae.png" alt="Minutiae"><figcaption><b>Minutiae</b> (cyan endings, yellow bifurcations)</figcaption></figure>
+  </div>
+
+  <article class="concept" id="otsu">
+    <h3>Otsu thresholding</h3>
+    <div class="tags"><span>Unit: Segmentation</span><span>Global threshold</span><span>Adaptive threshold</span><span>Histogram</span></div>
+    <p><b>Otsu's method</b> tries every threshold T and keeps the one that maximizes the <em>between-class variance</em> of the two resulting pixel groups, so it needs no manual tuning. It works best for a two-peaked histogram, which Gabor-enhanced ridges are. <b>Adaptive thresholding</b> uses a local threshold instead and copes with uneven lighting.</p>
+    <div class="formula">σ_B²(T) = ω0(T)·ω1(T)·[μ0(T) − μ1(T)]²        T* = argmax σ_B²(T)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/otsu-out.png" alt="Otsu threshold"><figcaption><b>Otsu result</b> on the ridge image: ridges white, valleys black.</figcaption></figure>
+    </div>
+    <div class="code">T, binary = cv2.threshold(enh8, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)</div>
+    <div class="use"><b>In GATTACA:</b> <code>extract.py</code> binarizes the enhanced ridge image before thinning.</div>
+  </article>
+
+  <article class="concept" id="thinning">
+    <h3>Thinning (skeletonization)</h3>
+    <div class="tags"><span>Unit: Morphology</span><span>Skeleton</span><span>Hit-or-miss</span></div>
+    <p>Thinning peels pixels from the border of every shape until a <b>one-pixel-wide centre line</b> remains, without breaking connectivity. <b>Zhang-Suen</b> does this in two alternating sub-passes using the pixel's 8 neighbors. A skeleton makes counting neighbors meaningful.</p>
+    <div class="figs">
+      <figure><img src="/assets/dip/thinning-out.png" alt="Thinning overlay"><figcaption><b>Skeleton</b> (red) over the ridges, with endings and bifurcations marked.</figcaption></figure>
+    </div>
+    <div class="code">skel = cv2.ximgproc.thinning(binary, thinningType=cv2.ximgproc.THINNING_ZHANGSUEN)</div>
+    <div class="use"><b>In GATTACA:</b> <code>extract.py</code> thins the ridge map before minutiae detection.</div>
+  </article>
+
+  <article class="concept" id="minutiae">
+    <h3>Minutiae and the 8-neighborhood (crossing number)</h3>
+    <div class="tags"><span>Unit: Pixel relationships</span><span>8-neighborhood</span><span>Biometrics</span></div>
+    <p><b>Minutiae</b> are the points where a ridge ends or splits. On the skeleton, look at the 8 neighbors of each pixel in circular order and count how often the value flips between 0 and 1. This is the <b>crossing number</b> CN: CN&nbsp;=&nbsp;1 is a ridge <em>ending</em>, CN&nbsp;=&nbsp;3 is a <em>bifurcation</em>. Points near the border or in low-quality areas are discarded.</p>
+    <div class="formula">CN(p) = ½ · Σ_{i=1..8} | P_i − P_{i+1} |         (P_9 = P_1)</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/stage-minutiae.png" alt="Minutiae at full resolution"><figcaption><b>Full resolution:</b> a clean set of endings and bifurcations.</figcaption></figure>
+      <figure><img src="/assets/dip/far-minutiae.png" alt="Minutiae at low resolution"><figcaption><b>Image shrunk 4x:</b> most true minutiae are gone and spurious ones appear.</figcaption></figure>
+    </div>
+    <div class="use"><b>In GATTACA:</b> the minutiae count and how many survive degradation are what the recoverability study measures.</div>
+  </article>
+</section>
+
+<!-- ================= 6 ================= -->
+<section class="stage" id="s6">
+  <div class="stage-n mono">STAGE 06 · SCORE</div>
+  <h2>Turning measurements into a risk band</h2>
+  <p class="where">Clarity, resolution and feature count become a calibrated HIGH / MEDIUM / LOW score, shown as a heat map over the photo.</p>
+
+  <article class="concept" id="color">
+    <h3>Pseudo-coloring</h3>
+    <div class="tags"><span>Unit: Color image processing</span><span>Color map</span><span>Indexed image</span></div>
+    <p><b>Pseudo-coloring</b> maps each gray level to a color through a lookup table. It adds no information but makes small differences visible: the eye separates many more colors than gray shades. The exposure heat map is a color map of local ridge evidence.</p>
+    <div class="figs" style="max-width:420px"><figure><img src="/assets/06_heat.jpg" alt="Exposure heat map"><figcaption><b>Exposure heat map</b> from the project.</figcaption></figure></div>
+    <div class="code">heat = cv2.applyColorMap(score_u8, cv2.COLORMAP_TURBO)</div>
+    <div class="use"><b>In GATTACA:</b> the heat map shows <em>where</em> on the skin ridge detail is recoverable.</div>
+  </article>
+
+  <article class="concept" id="jpeg">
+    <h3>JPEG compression (DCT, quantization) as a degradation</h3>
+    <div class="tags"><span>Unit: Compression</span><span>DCT</span><span>Lossy</span><span>PSNR</span></div>
+    <p>JPEG converts to YCbCr, splits the image into 8×8 blocks, applies the <b>DCT</b>, divides the coefficients by a <b>quantization table</b> (the only lossy step) and entropy-codes the result. Low quality uses large divisors, so the small high-frequency coefficients, exactly where fine ridge detail lives, round to zero. Quality is measured with <b>MSE</b> and <b>PSNR</b>.</p>
+    <div class="formula">PSNR = 10·log10( MAX² / MSE ) dB          Ĉ(u,v) = round( C(u,v) / Q(u,v) )</div>
+    <div class="figs">
+      <figure><img src="/assets/dip/jpeg-q8.png" alt="JPEG quality 8"><figcaption><b>Heavy compression:</b> block artifacts, fine detail smeared.</figcaption></figure>
+      <figure><img src="/assets/dip/jpeg-diff.png" alt="Difference image"><figcaption><b>Difference x6:</b> the loss is concentrated on the ridges.</figcaption></figure>
+    </div>
+    <div class="use"><b>In GATTACA:</b> JPEG quality is one degradation axis of the study. One re-encode at quality 75 costs about 1 pixel per ridge, which is why a re-compressed social-media photo exposes less than the original.</div>
+  </article>
+</section>
+</main>
+
+<footer>
+  GATTACA is a privacy-awareness tool. It estimates exposure risk; it does not store biometrics or defeat security systems.
+  &middot; <a href="/#how">Back to the GATTACA pipeline</a>
+</footer>
+</body>
+</html>
