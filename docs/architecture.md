@@ -19,7 +19,7 @@ flowchart LR
   svc -.->|uploads decoded in memory,<br/>video temp file deleted in finally| mem[(nothing persisted)]
 ```
 
-Live at **http://16.176.2.43:8000**, set up with one script (`aws/minimal_deploy.sh`). Every scoring request runs the full OpenCV 5 workload on this instance. It does not use COOL or Graviton.
+Set up with one script (`aws/minimal_deploy.sh`). Every scoring request runs the full OpenCV 5 workload on this instance. It does not use COOL or Graviton.
 
 ## 1b. Designed scale-out architecture (CDK, not deployed)
 
