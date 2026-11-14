@@ -1,3 +1,4 @@
+import { termById } from '../data/terms';
 import { intensityDemos, histogramDemos } from './intensity';
 import { filteringDemos } from './filtering';
 import { frequencyDemos, restorationDemos } from './frequency';
@@ -9,7 +10,7 @@ import { samplingDemos, textureDemos } from './sampling-texture';
 import type { Demo } from './types';
 
 /** Every Playground demo. A term links to one through `demoId`. */
-export const demos: Demo[] = [
+const courseDemos: Demo[] = [
   ...samplingDemos.filter((d) => d.group === 'Fundamentals'),
   ...intensityDemos,
   ...samplingDemos.filter((d) => d.group === 'Intensity transformations'),
@@ -27,6 +28,11 @@ export const demos: Demo[] = [
   ...featureDemos,
   ...motionDemos,
 ];
+
+/** Only demos that illustrate a term GATTACA uses. */
+export const demos: Demo[] = courseDemos
+  .filter((d) => d.termIds.some((id) => termById.has(id)))
+  .map((d) => ({ ...d, termIds: d.termIds.filter((id) => termById.has(id)) }));
 
 export const demoById = (id: string): Demo | undefined => demos.find((d) => d.id === id);
 

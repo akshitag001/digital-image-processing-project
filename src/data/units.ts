@@ -1,6 +1,7 @@
 import type { Unit } from './types';
+import { allTerms } from './terms';
 
-export const units: Unit[] = [
+const allUnits: Unit[] = [
   { id: 'u1', number: 1, title: 'Fundamentals of Digital Images', blurb: 'What an image is, how it is sampled and quantized, and the steps of a DIP system.' },
   { id: 'u2', number: 2, title: 'Pixel Relationships', blurb: 'Neighborhoods, adjacency, connectivity, regions, boundaries and distance measures.' },
   { id: 'u3', number: 3, title: 'Intensity Transformations', blurb: 'Point operations that map each input gray level to a new one.' },
@@ -20,4 +21,9 @@ export const units: Unit[] = [
   { id: 'u17', number: 17, title: 'Applications', blurb: 'Biometrics, medical, remote sensing, OCR and ethics.' },
 ];
 
-export const unitById = (id: string): Unit | undefined => units.find((u) => u.id === id);
+
+/** Units that still contain at least one GATTACA term. */
+export const units: Unit[] = allUnits.filter((u) => allTerms.some((t) => t.unit === u.id && termIdsHas(t.id)));
+import { GATTACA_TERM_IDS } from './gattaca';
+function termIdsHas(id: string) { return GATTACA_TERM_IDS.has(id); }
+export const unitById = (id: string): Unit | undefined => allUnits.find((u) => u.id === id);

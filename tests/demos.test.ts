@@ -23,11 +23,8 @@ describe('demo registry', () => {
     for (const t of terms) if (t.demoId) expect(demoById(t.demoId), `${t.id} -> demo ${t.demoId}`).toBeTruthy();
   });
 
-  it('covers every demo family required by the brief', () => {
-    const need = ['negative', 'log', 'gamma', 'contrast-stretch', 'threshold', 'histogram', 'hist-eq', 'clahe', 'gaussian', 'median', 'bilateral',
-      'sharpen-laplacian', 'unsharp', 'sobel', 'canny', 'fft-spectrum', 'freq-lowpass', 'freq-highpass', 'noise-denoise', 'color-channels', 'color-seg',
-      'rotate', 'scale', 'affine', 'perspective', 'morphology', 'thinning', 'otsu', 'adaptive-threshold', 'watershed', 'connected-components', 'hough-lines',
-      'jpeg-quality', 'harris', 'orb'];
+  it('keeps the demos behind the GATTACA pipeline', () => {
+    const need = ['clahe', 'bilateral', 'fft-spectrum', 'gabor', 'otsu', 'adaptive-threshold', 'thinning', 'morphology', 'sobel', 'optical-flow', 'jpeg-quality', 'sampling-aliasing', 'orb'];
     for (const id of need) expect(demoById(id), id).toBeTruthy();
   });
 });
@@ -56,19 +53,6 @@ describe('demo results are numerically sensible', () => {
   };
   const stat = (r: Awaited<ReturnType<typeof run>>, label: string) => r.stats?.find((s) => s.label.startsWith(label))?.value ?? '';
 
-  it('negative inverts: output = 255 - input', async () => {
-    const src = sampleById('scene').make();
-    const r = await demoById('negative')!.run(cv, src, {});
-    expect(r.outputs[0].image.data[0]).toBe(255 - src.data[0]);
-  });
-
-  it('median beats mean on salt-and-pepper noise (PSNR)', async () => {
-    const r = await run('noise-denoise', { noise: 'saltpepper', amount: 15, method: 'median', k: 3 });
-    const m = await run('noise-denoise', { noise: 'saltpepper', amount: 15, method: 'mean', k: 3 });
-    const psnr = (x: typeof r) => parseFloat(stat(x, 'PSNR').split('->')[1]);
-    expect(psnr(r)).toBeGreaterThan(psnr(m));
-  });
-
   it('Otsu finds a threshold between the two modes of the coins image', async () => {
     const r = await run('otsu');
     const T = Number(stat(r, 'Threshold T'));
@@ -76,32 +60,11 @@ describe('demo results are numerically sensible', () => {
     expect(T).toBeLessThan(200);
   });
 
-  it('watershed separates touching discs (more objects than plain connected components)', async () => {
-    const w = await run('watershed');
-    const cc = await run('connected-components', { minArea: 200 });
-    const nW = Number(stat(w, 'Objects found'));
-    const nC = Number(stat(cc, 'Components kept').split('/')[0]);
-    expect(nW).toBeGreaterThanOrEqual(10);
-    expect(nW).toBeGreaterThanOrEqual(nC);
-  });
-
   it('Lucas-Kanade recovers a known shift within 1 px', async () => {
     const r = await run('optical-flow', { dx: 6, dy: -3, rot: 0 });
     const m = /\(([-\d.]+), ([-\d.]+)\)/.exec(stat(r, 'Mean LK'))!;
     expect(Math.abs(Number(m[1]) - 6)).toBeLessThan(1);
     expect(Math.abs(Number(m[2]) + 3)).toBeLessThan(1);
-  });
-
-  it('wiener restores a degraded image better than the degraded input (PSNR)', async () => {
-    const r = await run('wiener', { method: 'wiener' });
-    const [a, b] = stat(r, 'PSNR').split('->').map((s) => parseFloat(s));
-    expect(b).toBeGreaterThan(a);
-  });
-
-  it('inverse filter with no noise restores almost perfectly', async () => {
-    const r = await run('wiener', { method: 'inverse', noise: 0, psf: 'gaussian', size: 3 });
-    const [, b] = stat(r, 'PSNR').split('->').map((s) => parseFloat(s));
-    expect(b).toBeGreaterThan(30);
   });
 
   it('JPEG quality falls with lower quality: smaller file and lower PSNR', async () => {

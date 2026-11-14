@@ -200,7 +200,7 @@ export function CaseStudyPage() {
     <div className="space-y-6">
       <header>
         <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">Case study</p>
-        <h1 className="text-3xl font-extrabold tracking-tight">GATTACA as a DIP pipeline</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">How GATTACA uses Digital Image Processing</h1>
         <p className="mt-2 max-w-3xl leading-relaxed text-slate-800 dark:text-slate-200">
           GATTACA was built for the OpenCV AI Competition 2026. It asks one privacy question: <em>how much fingerprint ridge detail does a photo of your own hand give away?</em> It answers by running a classical image-processing pipeline and
           measuring how many ridges survive. Every stage below is an ordinary technique from this course. Click any term to open its notes.

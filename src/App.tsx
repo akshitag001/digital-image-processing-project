@@ -5,15 +5,13 @@ import { TooltipHost } from './components/TooltipHost';
 import { GlossaryPage } from './pages/GlossaryPage';
 import { PlaygroundPage } from './pages/PlaygroundPage';
 import { CaseStudyPage } from './pages/CaseStudyPage';
-import { CoveragePage } from './pages/CoveragePage';
 import { baseRoute, hrefFor, useRoute } from './lib/router';
 import { useTheme } from './lib/store';
 
 const NAV: Array<{ label: string; href: string; match: (n: string) => boolean }> = [
-  { label: 'Glossary', href: hrefFor.home(), match: (n) => n === 'home' || n === 'unit' },
+  { label: 'GATTACA pipeline', href: hrefFor.home(), match: (n) => n === 'home' || n === 'case' },
+  { label: 'DIP terms used', href: hrefFor.glossary(), match: (n) => n === 'glossary' || n === 'unit' },
   { label: 'Playground', href: hrefFor.playground(), match: (n) => n === 'playground' },
-  { label: 'GATTACA case study', href: hrefFor.case(), match: (n) => n === 'case' },
-  { label: 'Syllabus coverage', href: hrefFor.coverage(), match: (n) => n === 'coverage' },
 ];
 
 export function App() {
@@ -24,7 +22,7 @@ export function App() {
 
   // page title + scroll to top when the page (not the drawer) changes
   useEffect(() => {
-    const t = { home: 'Glossary', unit: 'Unit', playground: 'Playground', case: 'GATTACA case study', coverage: 'Syllabus coverage' }[base.name];
+    const t = { home: 'GATTACA', glossary: 'DIP terms', unit: 'DIP terms', playground: 'Playground', case: 'GATTACA' }[base.name];
     document.title = `${t} | DIP Explorer`;
     if (route.name !== 'term') window.scrollTo({ top: 0 });
   }, [base.name, route.name, base.name === 'unit' ? base.id : '']);
@@ -49,7 +47,7 @@ export function App() {
             <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-600 text-white">
               {'◢'}
             </span>
-            DIP Explorer
+            DIP in GATTACA
           </a>
           <nav aria-label="Main" className="ml-2 hidden items-center gap-1 lg:flex">
             {NAV.map((n) => (
@@ -96,13 +94,12 @@ export function App() {
           <Sidebar route={route} base={base} onNavigate={() => setMenu(false)} />
         </aside>
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
-          {base.name === 'home' && <GlossaryPage />}
+          {(base.name === 'home' || base.name === 'case') && <CaseStudyPage />}
+          {base.name === 'glossary' && <GlossaryPage />}
           {base.name === 'unit' && <GlossaryPage unitId={base.id} />}
           {base.name === 'playground' && <PlaygroundPage demoId={base.demoId} />}
-          {base.name === 'case' && <CaseStudyPage />}
-          {base.name === 'coverage' && <CoveragePage />}
           <footer className="mt-10 border-t border-slate-200 pt-4 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
-            DIP Explorer is a course project. All image processing runs in your browser with OpenCV.js (WebAssembly); nothing you load is uploaded or stored.
+            This is a DIP course submission showing how the DIP concepts are used in the GATTACA project. All image processing runs in your browser with OpenCV.js (WebAssembly); nothing you load is uploaded or stored.
             Content flagged with TODO needs verification against your textbook.
           </footer>
         </main>

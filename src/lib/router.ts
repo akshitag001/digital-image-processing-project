@@ -8,7 +8,7 @@ export type Route =
   | { name: 'term'; id: string }
   | { name: 'playground'; demoId?: string }
   | { name: 'case' }
-  | { name: 'coverage' };
+  | { name: 'glossary' };
 
 export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
@@ -21,8 +21,8 @@ export function parseHash(hash: string): Route {
       return { name: 'playground', demoId: parts[1] };
     case 'case-study':
       return { name: 'case' };
-    case 'coverage':
-      return { name: 'coverage' };
+    case 'glossary':
+      return { name: 'glossary' };
     default:
       return { name: 'home' };
   }
@@ -34,7 +34,7 @@ export const hrefFor = {
   term: (id: string) => `#/term/${encodeURIComponent(id)}`,
   playground: (demoId?: string) => (demoId ? `#/playground/${demoId}` : '#/playground'),
   case: () => '#/case-study',
-  coverage: () => '#/coverage',
+  glossary: () => '#/glossary',
 };
 
 /** The page that sits behind the notes drawer, so closing the drawer returns there. */

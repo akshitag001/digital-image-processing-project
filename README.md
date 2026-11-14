@@ -1,46 +1,14 @@
-# DIP Explorer
+# DIP in GATTACA
 
-An interactive **Digital Image Processing** study guide and playground. Every DIP term is hoverable and clickable, and every technique can be tried live on an image, in the browser, with **OpenCV.js (WebAssembly)**. No backend, no server: it deploys to Vercel as a static site.
+A Digital Image Processing course submission that shows **how DIP concepts are used in the GATTACA project** (a privacy-awareness tool that measures how much fingerprint ridge detail a photo exposes). It is not a general DIP course: it only covers the techniques GATTACA actually uses.
 
-Built as a university DIP course project, adapted from the author's OpenCV hackathon project **GATTACA** (a privacy-awareness tool that measures how much fingerprint ridge detail a photo exposes).
+Runs entirely in the browser with OpenCV.js (WebAssembly). No backend; deploys to Vercel as a static site.
 
-<!-- Screenshots: add docs/screenshots/*.png and link them here -->
-> Screenshots placeholder: glossary home, notes drawer, playground, GATTACA case study.
+## What is on the site
 
-## Features
-
-- **191 glossary terms in 17 units** covering the whole syllabus. Each term has a one-line definition, a 3-6 paragraph explanation, KaTeX formulas, a techniques comparison table, OpenCV functions with copyable **Python and JavaScript** snippets, applications, exam tips and related terms.
-- **Hover** any term for a tooltip. **Click** for the notes drawer (slide-in, `Esc` to close). Terms mentioned inside explanations are auto-linked.
-- Collapsible unit tree, **fuzzy search**, bookmarks, "mark as revised" with per-unit progress (saved in `localStorage`).
-- **Deep links**: `/#/term/otsu-thresholding`, `/#/unit/u4`, `/#/playground/clahe`.
-- **Playground**: 49 live OpenCV.js demos with before/after, sliders, the exact OpenCV call and a "what you are seeing" caption. Upload an image or use generated samples.
-- **GATTACA case study**: grayscale, CLAHE, denoise, orientation field, PPRP/Nyquist, Gabor, Otsu, thinning, minutiae, plus a distance sweep.
-- **Syllabus coverage** page: term counts per unit and a checklist of every required sub-topic (enforced by a test).
-- Dark/light theme, responsive, keyboard accessible.
-
-## Syllabus coverage
-
-| Unit | Title | Terms |
-|---|---|---|
-| 1 | Fundamentals of Digital Images | 19 |
-| 2 | Pixel Relationships | 11 |
-| 3 | Intensity Transformations | 8 |
-| 4 | Histogram Processing | 4 |
-| 5 | Spatial Filtering | 16 |
-| 6 | Frequency Domain Processing | 14 |
-| 7 | Image Restoration | 13 |
-| 8 | Color Image Processing | 10 |
-| 9 | Geometric Transformations | 11 |
-| 10 | Morphological Processing | 12 |
-| 11 | Image Segmentation | 17 |
-| 12 | Image Compression | 18 |
-| 13 | Wavelets and Multiresolution | 6 |
-| 14 | Representation and Description | 11 |
-| 15 | Feature Extraction and Recognition | 8 |
-| 16 | Video and Motion | 5 |
-| 17 | Applications | 8 |
-
-The live numbers are on the in-app **Syllabus coverage** page. Facts I could not verify offline are marked `TODO` in the text and listed on that page; check them against your textbook.
+- **GATTACA pipeline (home):** the real pipeline step by step on a generated ridge pattern: grayscale, CLAHE, bilateral denoise, PPRP and Nyquist, orientation field, Gabor, Otsu, thinning, minutiae. Each stage shows the image, the explanation, the OpenCV call and links to the DIP terms. Includes a distance slider and a recoverability sweep.
+- **DIP terms used:** 75 terms that GATTACA relies on, each with a definition, explanation, formulas, OpenCV Python/JS code and exam tips. Hover for a one-line definition, click for the notes panel.
+- **Playground:** live OpenCV.js demos for the same techniques.
 
 ## Run locally
 
@@ -54,33 +22,9 @@ npm run preview    # serve dist/ locally
 
 Requires Node 20+. On Windows run tests from PowerShell or cmd (Git Bash with a lowercase drive letter confuses Vitest's module resolution).
 
-## How to add a term
+## Adding a term
 
-Everything lives in data files; no UI code changes are needed.
-
-1. Open the right unit file in `src/data/terms/` (for example `unit03-05.ts`) and append an entry to that unit's array:
-
-   ```ts
-   {
-     id: 'my-term',                      // unique kebab-case id (used in /#/term/my-term)
-     name: 'My term',
-     shortDef: 'One line, at most 20 words (shown in the hover tooltip).',
-     explanation: ['Paragraph 1.', 'Paragraph 2.', 'Paragraph 3.'],   // 3-6 paragraphs
-     formulas: [String.raw`s = c\,r^{\gamma}`],                          // LaTeX (KaTeX)
-     techniques: [{ name: 'A', whenToUse: '...', pros: '...', cons: '...' }],
-     opencvFunctions: ['cv.GaussianBlur'],   // must exist in src/data/snippets.ts
-     applications: ['...'],
-     relatedTermIds: ['gaussian-smoothing'], // must be existing ids
-     examTips: ['...'],
-     demoId: 'gaussian',                     // optional: a demo id from src/demos
-     aliases: ['alt name'],                  // optional: extra auto-link phrases
-   }
-   ```
-
-2. For a new OpenCV function add a Python and JS snippet to `src/data/snippets.ts`.
-3. Run `npm test`. The schema test checks ids, `relatedTermIds`, word limits, KaTeX syntax and snippet coverage. If the term is a required syllabus item, add it to `src/data/syllabus.ts`.
-
-To add a demo: create a `Demo` object (see `src/demos/types.ts`), register it in `src/demos/index.ts`, and link it from a term with `demoId`.
+Add the term to a file in `src/data/terms/` and add its id to `src/data/gattaca.ts` so it is shown. `npm test` validates the schema.
 
 ## Architecture
 

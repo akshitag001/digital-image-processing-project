@@ -86,18 +86,14 @@ export function GlossaryPage({ unitId }: { unitId?: string }) {
   return (
     <div className="space-y-6">
       <header className="rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 p-6 text-white shadow">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">DIP Explorer</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">DIP terms used in GATTACA</h1>
         <p className="mt-2 max-w-2xl text-indigo-50">
-          A Digital Image Processing study guide where every term is hoverable and clickable, with formulas, techniques, OpenCV code and a live demo that runs in your browser.
+          Only the Digital Image Processing concepts that the GATTACA project actually uses, each with a short explanation, the formulas, the OpenCV call and where it appears in the pipeline.
         </p>
         <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm">
           <div>
             <dt className="text-indigo-200">Terms</dt>
             <dd className="text-2xl font-bold">{terms.length}</dd>
-          </div>
-          <div>
-            <dt className="text-indigo-200">Units</dt>
-            <dd className="text-2xl font-bold">{units.length}</dd>
           </div>
           <div>
             <dt className="text-indigo-200">Live demos</dt>
@@ -114,11 +110,8 @@ export function GlossaryPage({ unitId }: { unitId?: string }) {
           <a href={hrefFor.playground()} className="rounded-lg bg-white px-4 py-2 font-semibold text-indigo-800 hover:bg-indigo-50">
             Open the Playground
           </a>
-          <a href={hrefFor.case()} className="rounded-lg border border-white/70 px-4 py-2 font-semibold text-white hover:bg-white/10">
-            GATTACA case study
-          </a>
-          <a href={hrefFor.coverage()} className="rounded-lg border border-white/70 px-4 py-2 font-semibold text-white hover:bg-white/10">
-            Syllabus coverage
+          <a href={hrefFor.home()} className="rounded-lg border border-white/70 px-4 py-2 font-semibold text-white hover:bg-white/10">
+            See the GATTACA pipeline
           </a>
         </div>
       </header>

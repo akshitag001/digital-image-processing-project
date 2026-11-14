@@ -10,8 +10,8 @@ const ids = new Set(terms.map((t) => t.id));
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 
 describe('glossary schema', () => {
-  it('has 100+ terms and every unit is populated', () => {
-    expect(terms.length).toBeGreaterThanOrEqual(100);
+  it('has the GATTACA term set and every listed unit is populated', () => {
+    expect(terms.length).toBeGreaterThanOrEqual(60);
     for (const u of units) {
       expect(terms.filter((t) => t.unit === u.id).length, `unit ${u.id} has no terms`).toBeGreaterThan(0);
     }
